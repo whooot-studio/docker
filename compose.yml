@@ -1,0 +1,70 @@
+version: "3"
+services:
+  client:
+    hostname: client
+    container_name: client
+    image: ghcr.io/whooot-studio/client:latest
+    environment:
+      - NITRO_HOST=${CLIENT_LISTEN}
+      - NITRO_PORT=${CLIENT_PORT}
+      - NUXT_PUBLIC_API_HOST=localhost
+      - NUXT_PUBLIC_API_PORT=${SERVER_PORT}
+      - NUXT_PUBLIC_API_SECURE=${SERVER_SECURE}
+      - NUXT_PUBLIC_CLIENT_URL=${CLIENT_PUBLIC_URL}
+    ports:
+      - "3000:${CLIENT_PORT}"
+
+  api:
+    hostname: api
+    container_name: api
+    image: ghcr.io/whooot-studio/api:latest
+    environment:
+      - NITRO_HOST=${SERVER_LISTEN}
+      - NITRO_PORT=${SERVER_PORT}
+      - NITRO_CLIENT_HOST=localhost
+      - NITRO_CLIENT_PORT=${CLIENT_PORT}
+      - NITRO_CLIENT_PROTOCOL=${CLIENT_PROTOCOL}
+      - NITRO_API_VERSION=${API_VERSION}
+      - NITRO_REDIS_HOST=${CACHE_HOST}
+      - NITRO_REDIS_PORT=${CACHE_PORT}
+      - DATABASE_URL=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      - NITRO_DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - NITRO_DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - NITRO_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - NITRO_GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - NITRO_TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
+      - NITRO_TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
+      - NITRO_SIMPLELOGIN_CLIENT_ID=${SIMPLELOGIN_CLIENT_ID}
+      - NITRO_SIMPLELOGIN_CLIENT_SECRET=${SIMPLELOGIN_CLIENT_SECRET}
+      - BETTER_AUTH_SECRET=${API_SECRET}
+    ports:
+      - "8000:${SERVER_PORT}"
+    depends_on:
+      - cache
+      - database
+
+  database:
+    hostname: ${DATABASE_HOST}
+    container_name: database
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    ports:
+      - 5432:${DATABASE_PORT}
+    volumes:
+      - data:/var/lib/postgresql/data/
+
+  cache:
+    hostname: ${CACHE_HOST}
+    container_name: cache
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:${CACHE_PORT}"
+      - "8001:8001"
+
+volumes:
+  data:
+    name: data

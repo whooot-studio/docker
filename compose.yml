@@ -1,7 +1,7 @@
 version: "3"
 services:
   client:
-    hostname: client
+    hostname: ${CLIENT_SSR_HOST}
     container_name: client
     image: ghcr.io/whooot-studio/client:latest
     environment:
@@ -15,7 +15,7 @@ services:
       - NUXT_PUBLIC_API_SSR_SECURE=${SERVER_SSR_SECURE}
       - NUXT_PUBLIC_CLIENT_URL=${CLIENT_PUBLIC_URL}
     ports:
-      - "3000:${CLIENT_PORT}"
+      - "3000:${CLIENT_SSR_PORT}"
 
   api:
     hostname: ${SERVER_SSR_HOST}
@@ -46,7 +46,7 @@ services:
       - NITRO_SIMPLELOGIN_CLIENT_SECRET=${SIMPLELOGIN_CLIENT_SECRET}
       - BETTER_AUTH_SECRET=${API_SECRET}
     ports:
-      - "8000:${SERVER_PORT}"
+      - "8000:${SERVER_SSR_PORT}"
     depends_on:
       - cache
       - database

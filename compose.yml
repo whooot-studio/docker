@@ -6,8 +6,8 @@ services:
     image: ghcr.io/whooot-studio/client:latest
     environment:
       - NITRO_HOST=${CLIENT_LISTEN}
-      - NITRO_PORT=${CLIENT_PORT}
-      - NUXT_PUBLIC_API_HOST=${CLIENT_HOST}
+      - NITRO_PORT=${CLIENT_SSR_PORT}
+      - NUXT_PUBLIC_API_HOST=${SERVER_HOST}
       - NUXT_PUBLIC_API_PORT=${SERVER_PORT}
       - NUXT_PUBLIC_API_SECURE=${SERVER_SECURE}
       - NUXT_PUBLIC_API_SSR_HOST=${SERVER_SSR_HOST}
@@ -23,7 +23,7 @@ services:
     image: ghcr.io/whooot-studio/api:latest
     environment:
       - NITRO_HOST=${SERVER_LISTEN}
-      - NITRO_PORT=${SERVER_PORT}
+      - NITRO_PORT=${SERVER_SSR_PORT}
       - NITRO_CLIENT_HOST=${CLIENT_HOST}
       - NITRO_CLIENT_PORT=${CLIENT_PORT}
       - NITRO_CLIENT_PROTOCOL=${CLIENT_PROTOCOL}
